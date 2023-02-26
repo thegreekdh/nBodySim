@@ -11,7 +11,7 @@ public class Body implements Runnable {
     double yVelocity;
     Color color;
     int radius;
-
+    int updateOldPos = 0;
     double tempXPos;
     double tempYPos;
     double tempXVelocity;
@@ -48,12 +48,16 @@ public class Body implements Runnable {
     }
 
     public void update() {
-//        oldXs.push(xPos);
-//        oldYs.push(yPos);
-//        if (oldXs.size() > 500) {
-//            oldXs.removeLast();
-//            oldYs.removeLast();
-//        }
+        updateOldPos++;
+        if (updateOldPos == 1000) {
+            updateOldPos = 0;
+            oldXs.push(xPos);
+            oldYs.push(yPos);
+            if (oldXs.size() > 100) {
+                oldXs.removeLast();
+                oldYs.removeLast();
+            }
+        }
         xPos = tempXPos;
         yPos = tempYPos;
         xVelocity = tempXVelocity;

@@ -4,12 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 
 public class Main extends JPanel implements Runnable{
 
 
     Body[] bodies = new Body[10];
-    int timeStep = 60;  // seconds
+    int timeStep = 30;  // seconds
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
@@ -41,19 +42,22 @@ public class Main extends JPanel implements Runnable{
             g.fillOval(temp1, temp2,
                     bodies[i].radius, bodies[i].radius);
 
-//            for (int j = 0; j < bodies[i].oldXs.size(); j++) {
-//                int temp3 = (int) (bodies[i].oldXs.get(j) / 1000000000.0);
-//                int temp4 = -(int) (bodies[i].oldYs.get(j) / 1000000000.0);
-//                temp3 += 500;
-//                temp4 += 500;
-//                temp3 -= (int) (bodies[i].radius / 2);
-//                temp4 -= (int) (bodies[i].radius / 2);
-//
-//                g.drawLine(temp1, temp2,
-//                        temp3, temp4);
-//                temp1 = temp3;
-//                temp2 = temp4;
-//            }
+            temp1 += (int) (bodies[i].radius / 2);
+            temp2 += (int) (bodies[i].radius / 2);
+            Iterator<Double> xIt = bodies[i].oldXs.iterator();
+            Iterator<Double> yIt = bodies[i].oldYs.iterator();
+
+            while (xIt.hasNext()) {
+                int temp3 = (int) (xIt.next() / 1000000000.0);
+                int temp4 = -(int) (yIt.next() / 1000000000.0);
+                temp3 += 500;
+                temp4 += 500;
+                g.drawLine(temp1, temp2,
+                        temp3, temp4);
+                temp1 = temp3;
+                temp2 = temp4;
+            }
+
         }
     }
 
@@ -87,8 +91,13 @@ public class Main extends JPanel implements Runnable{
         Body pluto = new Body(1.303e22,
                 5.913e12, 0.0,
                 0.0, 4740, Color.DARK_GRAY, 10);
-        //Body anotherSun = new Body(1.989e30,
-        //        1e11, 0, 0, 40000, Color.PINK, 50);
+//        Body anotherSun = new Body(1.989e30,
+//                1e11, 0, 0, 40000, Color.PINK, 50);
+        //Body ceres = new Body(9.393e20,
+        //        2.769e11, 0.0,
+        //        0.0, 21000, Color.MAGENTA, 5);
+
+
 
 
 
@@ -113,7 +122,7 @@ public class Main extends JPanel implements Runnable{
         bodies[7] = uranus;
         bodies[8] = neptune;
         bodies[9] = pluto;
-        //bodies[10] = anotherSun;
+        //bodies[10] = ceres;
 
         int cntr = 0;
         //int dayCntr = 0;
@@ -125,7 +134,7 @@ public class Main extends JPanel implements Runnable{
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(2000, 1200);
         f.setVisible(true);
-        new Thread(this).start();
+        //new Thread(this).start();
         while (true) {
             for (int i = 0; i < bodies.length; i++) {
                 bodies[i].calculateForce(bodies, timeStep);
@@ -133,13 +142,13 @@ public class Main extends JPanel implements Runnable{
             for (int i = 0; i < bodies.length; i++) {
                 bodies[i].update();
             }
-//            if (cntr % 50000 == 0) {
+            if (cntr % 500 == 0) {
 //                //dayCntr++;
 //                //System.out.println("Merc: " + dayCntr + ": " + mercury.xPos + ", " + mercury.yPos + ", "
 //                //        + mercury.xVelocity + ", " + mercury.yVelocity);
-//                repaint();
+                repaint();
 //                cntr =0;
-//            }
+            }
 
             cntr++;
         }
@@ -151,7 +160,7 @@ public class Main extends JPanel implements Runnable{
         while (true) {
             repaint();
             try {
-                Thread.sleep(5);
+                Thread.sleep(15);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
