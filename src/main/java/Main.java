@@ -26,7 +26,9 @@ public class Main extends JPanel implements Runnable{
        g.fillRect(0, 0, 2000, 1200);
        g.setColor(Color.WHITE);
        g.fillRect(998, 0, 4, 1200);
-
+       g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+       g.drawString("Top view", 400, 50);
+       g.drawString("Side view", 1400, 50);
         for (int i = 0; i < 5; i++) {
 
 
@@ -37,7 +39,7 @@ public class Main extends JPanel implements Runnable{
             int temp1 = (int) (bodies[i].xPos / 500000000.0);
             int temp2 = -(int) (bodies[i].yPos / 500000000.0);
             temp1 += 500;
-            temp2 += 500;
+            temp2 += 600;
             temp1 -= (int) (bodies[i].radius / 2);
             temp2 -= (int) (bodies[i].radius / 2);
 
@@ -54,7 +56,7 @@ public class Main extends JPanel implements Runnable{
                 int temp3 = (int) (xIt.next() / 500000000.0);
                 int temp4 = -(int) (yIt.next() / 500000000.0);
                 temp3 += 500;
-                temp4 += 500;
+                temp4 += 600;
                 g.drawLine(temp1, temp2,
                         temp3, temp4);
                 temp1 = temp3;
@@ -64,15 +66,18 @@ public class Main extends JPanel implements Runnable{
         }
 
         for (int i = 0; i < 5; i++) {
+            g.setColor(bodies[i].color);
             int temp1 = (int) (bodies[i].xPos / 500000000.0);
             int temp2 = (int) -(bodies[i].zPos / 500000000.0);
             temp1 += 1500;
-            temp2 += 500;
+            temp2 += 600;
+            g.drawLine(temp1, 600, temp1, temp2);
             temp1 -= (int) (bodies[i].radius / 2);
             temp2 -= (int) (bodies[i].radius / 2);
-            g.setColor(bodies[i].color);
+
             g.fillOval(temp1, temp2,
                     bodies[i].radius, bodies[i].radius);
+
         }
     }
 
@@ -81,16 +86,16 @@ public class Main extends JPanel implements Runnable{
         Body sun = new Body(1.989e30,
                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Color.YELLOW, 50);
         Body mercury = new Body(3.3011e23,
-                5.79e10, 0.0, 0.0,
+                4.79e10, 0.0, 0.0,
                 0.0, 47360, 0.0, Color.GRAY, 10);
         Body venus = new Body(4.8675e24,
-                1.082e11, 0.0, 0.0,
+                1.082e11, 0.0, 1e10,
                 0.0, 35020, 0.0, Color.WHITE, 20);
         Body earth = new Body(5.972e24,
                 1.496e11, 0.0, 0.0,
                 0.0, 29780, 0.0, Color.GREEN, 25);
         Body mars = new Body(6.4171e23,
-                2.279e11, 0.0, 0.0,
+                2.279e11, 0.0, 5e10,
                 0.0, 24130, 0.0, Color.RED, 15);
         Body jupiter = new Body(1.8986e27,
                 7.785e11, 0.0, 0.0,
