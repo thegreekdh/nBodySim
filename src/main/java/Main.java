@@ -24,15 +24,18 @@ public class Main extends JPanel implements Runnable{
     public void paintComponent(Graphics g) {
        g.setColor(Color.BLACK);
        g.fillRect(0, 0, 2000, 1200);
-        for (int i = 0; i < bodies.length; i++) {
+       g.setColor(Color.WHITE);
+       g.fillRect(998, 0, 4, 1200);
+
+        for (int i = 0; i < 5; i++) {
 
 
 
 
             //g.fillOval(500, 500,
             //        bodies[i].radius, bodies[i].radius);
-            int temp1 = (int) (bodies[i].xPos / 1000000000.0);
-            int temp2 = -(int) (bodies[i].yPos / 1000000000.0);
+            int temp1 = (int) (bodies[i].xPos / 500000000.0);
+            int temp2 = -(int) (bodies[i].yPos / 500000000.0);
             temp1 += 500;
             temp2 += 500;
             temp1 -= (int) (bodies[i].radius / 2);
@@ -48,8 +51,8 @@ public class Main extends JPanel implements Runnable{
             Iterator<Double> yIt = bodies[i].oldYs.iterator();
 
             while (xIt.hasNext()) {
-                int temp3 = (int) (xIt.next() / 1000000000.0);
-                int temp4 = -(int) (yIt.next() / 1000000000.0);
+                int temp3 = (int) (xIt.next() / 500000000.0);
+                int temp4 = -(int) (yIt.next() / 500000000.0);
                 temp3 += 500;
                 temp4 += 500;
                 g.drawLine(temp1, temp2,
@@ -58,6 +61,18 @@ public class Main extends JPanel implements Runnable{
                 temp2 = temp4;
             }
 
+        }
+
+        for (int i = 0; i < 5; i++) {
+            int temp1 = (int) (bodies[i].xPos / 500000000.0);
+            int temp2 = (int) -(bodies[i].zPos / 500000000.0);
+            temp1 += 1500;
+            temp2 += 500;
+            temp1 -= (int) (bodies[i].radius / 2);
+            temp2 -= (int) (bodies[i].radius / 2);
+            g.setColor(bodies[i].color);
+            g.fillOval(temp1, temp2,
+                    bodies[i].radius, bodies[i].radius);
         }
     }
 
