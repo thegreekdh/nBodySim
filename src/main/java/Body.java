@@ -7,15 +7,19 @@ public class Body implements Runnable {
     double mass;
     double xPos;
     double yPos;
+    double zPos;
     double xVelocity;
     double yVelocity;
+    double zVelocity;
     Color color;
     int radius;
     int updateOldPos = 0;
     double tempXPos;
     double tempYPos;
+    double tempZPos;
     double tempXVelocity;
     double tempYVelocity;
+    double tempZVelocity;
 
     LinkedList<Double> oldXs;
     LinkedList<Double> oldYs;
@@ -26,6 +30,18 @@ public class Body implements Runnable {
         public VectorForce(double magnitude, double angle) {
             this.magnitude = magnitude;
             this.angle = angle;
+        }
+    }
+
+    private class threeDVector {
+        double xMag;
+        double yMag;
+        double zMag;
+
+        public threeDVector(double xMag, double yMag, double zMag) {
+            this.xMag = xMag;
+            this.yMag = yMag;
+            this.zMag = zMag;
         }
     }
 
