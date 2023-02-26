@@ -10,7 +10,7 @@ public class Main extends JPanel implements Runnable{
 
 
     Body[] bodies = new Body[10];
-    int timeStep = 30;  // seconds
+    int timeStep = 20;  // seconds
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
