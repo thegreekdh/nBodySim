@@ -61,36 +61,37 @@ public class Main extends JPanel implements Runnable{
         }
     }
 
+
     public void start() {
         Body sun = new Body(1.989e30,
-                0.0, 0.0, 0.0, 0.0, Color.YELLOW, 50);
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Color.YELLOW, 50);
         Body mercury = new Body(3.3011e23,
-                5.79e10, 0.0,
-                0.0, 47360, Color.GRAY, 10);
+                5.79e10, 0.0, 0.0,
+                0.0, 47360, 0.0, Color.GRAY, 10);
         Body venus = new Body(4.8675e24,
-                1.082e11, 0.0,
-                0.0, 35020, Color.WHITE, 20);
+                1.082e11, 0.0, 0.0,
+                0.0, 35020, 0.0, Color.WHITE, 20);
         Body earth = new Body(5.972e24,
-                1.496e11, 0.0,
-                0.0, 29780, Color.GREEN, 25);
+                1.496e11, 0.0, 0.0,
+                0.0, 29780, 0.0, Color.GREEN, 25);
         Body mars = new Body(6.4171e23,
-                2.279e11, 0.0,
-                0.0, 24130, Color.RED, 15);
+                2.279e11, 0.0, 0.0,
+                0.0, 24130, 0.0, Color.RED, 15);
         Body jupiter = new Body(1.8986e27,
-                7.785e11, 0.0,
-                0.0, 13070, Color.ORANGE, 40);
+                7.785e11, 0.0, 0.0,
+                0.0, 13070, 0.0, Color.ORANGE, 40);
         Body saturn = new Body(5.6834e26,
-                1.433e12, 0.0,
-                0.0, 9690, Color.YELLOW, 35);
+                1.433e12, 0.0, 0.0,
+                0.0, 9690, 0.0, Color.YELLOW, 35);
         Body uranus = new Body(8.6810e25,
-                2.871e12, 0.0,
-                0.0, 6810, Color.CYAN, 30);
+                2.871e12, 0.0, 0.0,
+                0.0, 6810, 0.0, Color.CYAN, 30);
         Body neptune = new Body(1.0243e26,
-               4.495e12, 0.0,
-                0.0, 5430, Color.BLUE, 30);
+               4.495e12, 0.0, 0.0,
+                0.0, 5430, 0.0, Color.BLUE, 30);
         Body pluto = new Body(1.303e22,
-                5.913e12, 0.0,
-                0.0, 4740, Color.DARK_GRAY, 10);
+                5.913e12, 0.0, 0.0,
+                0.0, 4740, 0.0, Color.DARK_GRAY, 10);
 //        Body anotherSun = new Body(1.989e30,
 //                1e11, 0, 0, 40000, Color.PINK, 50);
         //Body ceres = new Body(9.393e20,
