@@ -19,7 +19,7 @@ public class Main extends JPanel implements Runnable{
     boolean followingMode = false;
     double scale = 500000000.0;
     int bodyToFollow = 0;
-    int timeStep = 20;  // seconds
+    int timeStep = 1;  // seconds
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
@@ -198,7 +198,7 @@ public class Main extends JPanel implements Runnable{
         f.setSize(2200, 1200);
         f.setVisible(true);
 
-        InputMap im = getInputMap(WHEN_FOCUSED);
+        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
 
         im.put(KeyStroke.getKeyStroke("UP"), "up");
