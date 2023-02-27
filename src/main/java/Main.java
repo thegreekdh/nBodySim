@@ -23,12 +23,12 @@ public class Main extends JPanel implements Runnable{
     @Override
     public void paintComponent(Graphics g) {
        g.setColor(Color.BLACK);
-       g.fillRect(0, 0, 2000, 1200);
+       g.fillRect(0, 0, 2200, 1200);
        g.setColor(Color.WHITE);
-       g.fillRect(998, 0, 4, 1200);
+       g.fillRect(1098, 0, 4, 1200);
        g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-       g.drawString("Top view", 400, 50);
-       g.drawString("Side view", 1400, 50);
+       g.drawString("Top view", 450, 50);
+       g.drawString("Side view", 1550, 50);
         for (int i = 0; i < 5; i++) {
 
 
@@ -38,7 +38,7 @@ public class Main extends JPanel implements Runnable{
             //        bodies[i].radius, bodies[i].radius);
             int temp1 = (int) (bodies[i].xPos / 500000000.0);
             int temp2 = -(int) (bodies[i].yPos / 500000000.0);
-            temp1 += 500;
+            temp1 += 550;
             temp2 += 600;
             temp1 -= (int) (bodies[i].radius / 2);
             temp2 -= (int) (bodies[i].radius / 2);
@@ -55,7 +55,7 @@ public class Main extends JPanel implements Runnable{
             while (xIt.hasNext()) {
                 int temp3 = (int) (xIt.next() / 500000000.0);
                 int temp4 = -(int) (yIt.next() / 500000000.0);
-                temp3 += 500;
+                temp3 += 550;
                 temp4 += 600;
                 g.drawLine(temp1, temp2,
                         temp3, temp4);
@@ -69,7 +69,7 @@ public class Main extends JPanel implements Runnable{
             g.setColor(bodies[i].color);
             int temp1 = (int) (bodies[i].xPos / 500000000.0);
             int temp2 = (int) -(bodies[i].zPos / 500000000.0);
-            temp1 += 1500;
+            temp1 += 1650;
             temp2 += 600;
             g.drawLine(temp1, 600, temp1, temp2);
             temp1 -= (int) (bodies[i].radius / 2);
@@ -84,19 +84,20 @@ public class Main extends JPanel implements Runnable{
 
     public void start() {
         Body sun = new Body(1.989e30,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Color.YELLOW, 50);
+                -1.343760924609516E+06, -6.047191362649841E+04, 3.179594186041649E+04,
+                2.841473940679482E-03, -1.525973169332030E-02, 5.700220793954363E-05, Color.YELLOW, 50);
         Body mercury = new Body(3.3011e23,
-                4.79e10, 0.0, 0.0,
-                0.0, 47360, 0.0, Color.GRAY, 10);
+                1.711125709127513E+07, -6.479770815640976E+07, -6.951318790816076E+06,
+                3.708392700753278E+01, 1.581866756195965E+01, -2.107248961476617E+00, Color.GRAY, 10);
         Body venus = new Body(4.8675e24,
-                1.082e11, 0.0, 1e10,
-                0.0, 35020, 0.0, Color.WHITE, 20);
+                6.858873399242932E+07, 8.231814517972817E+07, -2.872485832412515E+06,
+                -2.680372526403628E+01, 2.249962496572153E+01, 1.855975221710441E+00, Color.WHITE, 20);
         Body earth = new Body(5.972e24,
-                1.496e11, 0.0, 0.0,
-                0.0, 29780, 0.0, Color.GREEN, 25);
+                -1.374578929623432E+08, 5.828629402214251E+07, 2.938774468573555E+04,
+                -1.220909157713714E+01, -2.751588919426942E+01, 4.882913994546101E-04, Color.GREEN, 25);
         Body mars = new Body(6.4171e23,
-                2.279e11, 0.0, 5e10,
-                0.0, 24130, 0.0, Color.RED, 15);
+                -1.017378283695528E+08, 2.209920802322008E+08, 7.127262757147059E+06,
+                -2.114100953927668E+01, -7.974960381357101E+00, 3.518835870921877E-01, Color.RED, 15);
         Body jupiter = new Body(1.8986e27,
                 7.785e11, 0.0, 0.0,
                 0.0, 13070, 0.0, Color.ORANGE, 40);
@@ -153,7 +154,7 @@ public class Main extends JPanel implements Runnable{
         JFrame f = new JFrame();
         f.add(this);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(2000, 1200);
+        f.setSize(2200, 1200);
         f.setVisible(true);
         //new Thread(this).start();
         while (true) {

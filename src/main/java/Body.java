@@ -48,12 +48,12 @@ public class Body implements Runnable {
     public Body(double mass, double xPos, double yPos, double zPos, double xVelocity,
                 double yVelocity, double zVelocity, Color color, int radius) {
         this.mass = mass;
-        this.xPos = xPos;
-        this.yPos = yPos;
-        this.zPos = zPos;
-        this.xVelocity = xVelocity;
-        this.yVelocity = yVelocity;
-        this.zVelocity = zVelocity;
+        this.xPos = xPos *  1000;
+        this.yPos = yPos *  1000;
+        this.zPos = zPos *  1000;
+        this.xVelocity = xVelocity *  1000;
+        this.yVelocity = yVelocity *  1000;
+        this.zVelocity = zVelocity *  1000;
         this.color = color;
         this.radius = radius;
         tempXPos = 0.0;
