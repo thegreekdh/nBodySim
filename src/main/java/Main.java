@@ -10,8 +10,8 @@ import java.util.Iterator;
 public class Main extends JPanel implements Runnable{
 
 
-    Body[] bodies = new Body[12];
-    int bodiesToSim = 12;
+    Body[] bodies = new Body[17];
+    int bodiesToSim = 17;
     int xOffset = 550;
     int yOffset = 600;
     int yOffsetSideView = yOffset;
@@ -136,6 +136,22 @@ public class Main extends JPanel implements Runnable{
         Body moon = new Body(7.34767309e22,
                 -1.372154672737438E+08, 5.858916861173135E+07, 3.878218492670730E+04,
                 -1.295101330709591E+01, -2.683730152708864E+01, 4.882913994546101E-04, Color.WHITE, 5);
+        Body io = new Body(8.931938e22,
+                7.059811559222276E+088, 2.206162022719481E+08, -1.668891879840240E+07,
+                -1.074892601280871E+01, 2.904066745883379E+01, 4.980292541964140E-01, Color.WHITE, 5);
+        Body europa = new Body(4.799844e22,
+                7.061599609226100E+08, 2.200866843803024E+08, -1.670078199216314E+07,
+                3.250463883889849E+00, 2.463168528862401E+01, 6.115150561556053E-01, Color.WHITE, 5);
+        Body ganymede = new Body(1.4819e23,
+                7.046707735447637E+08, 2.199065229102390E+08, -1.673422526231553E+07,
+                1.512512431266026E+00, 3.745291866738162E+00, -2.426067702312382E-01, Color.WHITE, 5);
+        Body callisto = new Body(1.075938e23,
+                7.072815217090786E+08, 2.196461586913177E+08, -1.670343493291690E+07,
+                -5.241670251298696E-01, 2.054553561221208E+01, 3.177641489852636E-01, Color.WHITE, 5);
+        Body titan = new Body(1.3452e23,
+                1.240178874942972E+09, -7.855682211623263E+08, -3.518056014547974E+07,
+                1.007389420466657E+01, 6.966986358379626E+00, -2.612912464657913E-01, Color.WHITE, 5);
+
 
 
 
@@ -164,6 +180,11 @@ public class Main extends JPanel implements Runnable{
         bodies[9] = uranus;
         bodies[10] = neptune;
         bodies[11] = pluto;
+        bodies[12] = io;
+        bodies[13] = europa;
+        bodies[14] = ganymede;
+        bodies[15] = callisto;
+        bodies[16] = titan;
 
 
         int cntr = 0;
