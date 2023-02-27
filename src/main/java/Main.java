@@ -9,7 +9,7 @@ import java.util.Iterator;
 public class Main extends JPanel implements Runnable{
 
 
-    Body[] bodies = new Body[10];
+    Body[] bodies = new Body[11];
     int timeStep = 20;  // seconds
 //    public void render() {
 //        StdDraw.clear();
@@ -81,7 +81,7 @@ public class Main extends JPanel implements Runnable{
         }
     }
 
-
+    // ephemeris data from https://ssd.jpl.nasa.gov/horizons.cgi
     public void start() {
         Body sun = new Body(1.989e30,
                 -1.343760924609516E+06, -6.047191362649841E+04, 3.179594186041649E+04,
@@ -99,25 +99,26 @@ public class Main extends JPanel implements Runnable{
                 -1.017378283695528E+08, 2.209920802322008E+08, 7.127262757147059E+06,
                 -2.114100953927668E+01, -7.974960381357101E+00, 3.518835870921877E-01, Color.RED, 15);
         Body jupiter = new Body(1.8986e27,
-                7.785e11, 0.0, 0.0,
-                0.0, 13070, 0.0, Color.ORANGE, 40);
+                7.055924787247471E+08, 2.204514214682221E+08, -1.670061914610689E+07,
+                -4.044486567644700E+00, 1.308417710370551E+01, 3.615302501804774E-02, Color.ORANGE, 40);
         Body saturn = new Body(5.6834e26,
-                1.433e12, 0.0, 0.0,
-                0.0, 9690, 0.0, Color.YELLOW, 35);
+                1.240447749705632E+09, -7.845212423386828E+08, -3.574725983464175E+07,
+                4.621403504557823E+00, 8.145608399404992E+00, -3.257302331113943E-01, Color.YELLOW, 35);
         Body uranus = new Body(8.6810e25,
-                2.871e12, 0.0, 0.0,
-                0.0, 6810, 0.0, Color.CYAN, 30);
+                1.974191936542250E+09, 2.178993208448020E+09, -1.748319367804456E+07,
+                -5.096844721068565E+00, 4.255135540231182E+00, 8.161828707303309E-02, Color.CYAN, 30);
         Body neptune = new Body(1.0243e26,
-               4.495e12, 0.0, 0.0,
-                0.0, 5430, 0.0, Color.BLUE, 30);
+                4.453144242684819E+09, -4.138905088272247E+08, -9.410400143731076E+07,
+                4.673996655521420E-01, 5.443818432396268E+00, -1.235090747211511E-01, Color.BLUE, 30);
         Body pluto = new Body(1.303e22,
-                5.913e12, 0.0, 0.0,
-                0.0, 4740, 0.0, Color.DARK_GRAY, 10);
+                2.442548562633492E+09, -4.577248595625036E+09, -2.167356603368096E+08,
+                4.948830971912519E+00, 1.383320622318901E+00, -1.588267256009569E+00, Color.DARK_GRAY, 10);
 //        Body anotherSun = new Body(1.989e30,
 //                1e11, 0, 0, 40000, Color.PINK, 50);
-        //Body ceres = new Body(9.393e20,
-        //        2.769e11, 0.0,
-        //        0.0, 21000, Color.MAGENTA, 5);
+        Body ceres = new Body(9.393e20,
+                -3.760270381504925E+08, 3.792730059730145E+07, 7.025117451664409E+07,
+                -2.469971454729070E+00, -1.914948577918830E+01, -1.494377118401031E-01, Color.PINK, 10);
+
 
 
 
@@ -139,12 +140,13 @@ public class Main extends JPanel implements Runnable{
         bodies[2] = venus;
         bodies[3] = earth;
         bodies[4] = mars;
-        bodies[5] = jupiter;
-        bodies[6] = saturn;
-        bodies[7] = uranus;
-        bodies[8] = neptune;
-        bodies[9] = pluto;
-        //bodies[10] = ceres;
+        bodies[5] = ceres;
+        bodies[6] = jupiter;
+        bodies[7] = saturn;
+        bodies[8] = uranus;
+        bodies[9] = neptune;
+        bodies[10] = pluto;
+
 
         int cntr = 0;
         //int dayCntr = 0;
@@ -158,10 +160,10 @@ public class Main extends JPanel implements Runnable{
         f.setVisible(true);
         //new Thread(this).start();
         while (true) {
-            for (int i = 0; i < bodies.length; i++) {
+            for (int i = 0; i < 5; i++) {
                 bodies[i].calculateForce(bodies, timeStep);
             }
-            for (int i = 0; i < bodies.length; i++) {
+            for (int i = 0; i < 5; i++) {
                 bodies[i].update();
             }
             if (cntr % 500 == 0) {
