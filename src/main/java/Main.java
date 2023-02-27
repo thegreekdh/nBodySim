@@ -2,6 +2,7 @@
 import javax.swing.*;
 //import java.awt.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Iterator;
@@ -9,7 +10,15 @@ import java.util.Iterator;
 public class Main extends JPanel implements Runnable{
 
 
-    Body[] bodies = new Body[11];
+    Body[] bodies = new Body[12];
+    int bodiesToSim = 12;
+    int xOffset = 550;
+    int yOffset = 600;
+    int yOffsetSideView = yOffset;
+    int midPoint = 1100;
+
+    double scale = 500000000.0;
+
     int timeStep = 20;  // seconds
 //    public void render() {
 //        StdDraw.clear();
@@ -22,28 +31,30 @@ public class Main extends JPanel implements Runnable{
 
     @Override
     public void paintComponent(Graphics g) {
-       g.setColor(Color.BLACK);
-       g.fillRect(0, 0, 2200, 1200);
-       g.setColor(Color.WHITE);
-       g.fillRect(1098, 0, 4, 1200);
-       g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-       g.drawString("Top view", 450, 50);
-       g.drawString("Side view", 1550, 50);
-        for (int i = 0; i < 5; i++) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 2200, 1200);
+        g.setColor(Color.WHITE);
+        g.fillRect(midPoint - 2, 0, 4, 1200);
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+        g.drawString("Top view", 450, 50);
+        g.drawString("Side view", 1550, 50);
+        for (int i = 0; i < bodiesToSim; i++) {
 
 
 
 
             //g.fillOval(500, 500,
             //        bodies[i].radius, bodies[i].radius);
-            int temp1 = (int) (bodies[i].xPos / 500000000.0);
-            int temp2 = -(int) (bodies[i].yPos / 500000000.0);
-            temp1 += 550;
-            temp2 += 600;
+            int temp1 = (int) (bodies[i].xPos / scale);
+            int temp2 = -(int) (bodies[i].yPos / scale);
+            temp1 += xOffset;
+            temp2 += yOffset;
             temp1 -= (int) (bodies[i].radius / 2);
             temp2 -= (int) (bodies[i].radius / 2);
 
             g.setColor(bodies[i].color);
+            if (temp1 < 0 || temp1 > 1050 || temp2 < 0 || temp2 > 1050)
+                continue;
             g.fillOval(temp1, temp2,
                     bodies[i].radius, bodies[i].radius);
 
@@ -53,10 +64,12 @@ public class Main extends JPanel implements Runnable{
             Iterator<Double> yIt = bodies[i].oldYs.iterator();
 
             while (xIt.hasNext()) {
-                int temp3 = (int) (xIt.next() / 500000000.0);
-                int temp4 = -(int) (yIt.next() / 500000000.0);
-                temp3 += 550;
-                temp4 += 600;
+                int temp3 = (int) (xIt.next() / scale);
+                int temp4 = -(int) (yIt.next() / scale);
+                temp3 += xOffset;
+                temp4 += yOffset;
+                if (temp1 < 0 || temp1 > 1050 || temp2 < 0 || temp2 > 1050)
+                    break;
                 g.drawLine(temp1, temp2,
                         temp3, temp4);
                 temp1 = temp3;
@@ -65,13 +78,15 @@ public class Main extends JPanel implements Runnable{
 
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < bodiesToSim; i++) {
             g.setColor(bodies[i].color);
-            int temp1 = (int) (bodies[i].xPos / 500000000.0);
-            int temp2 = (int) -(bodies[i].zPos / 500000000.0);
-            temp1 += 1650;
-            temp2 += 600;
-            g.drawLine(temp1, 600, temp1, temp2);
+            int temp1 = (int) (bodies[i].xPos / scale);
+            int temp2 = (int) -(bodies[i].zPos / scale);
+            temp1 += xOffset + midPoint;
+            temp2 += yOffsetSideView;
+            if (temp1 < 1150 || temp1 > 2200 || temp2 < 0 || temp2 > 1050)
+                continue;
+            g.drawLine(temp1, yOffsetSideView, temp1, temp2);
             temp1 -= (int) (bodies[i].radius / 2);
             temp2 -= (int) (bodies[i].radius / 2);
 
@@ -118,7 +133,9 @@ public class Main extends JPanel implements Runnable{
         Body ceres = new Body(9.393e20,
                 -3.760270381504925E+08, 3.792730059730145E+07, 7.025117451664409E+07,
                 -2.469971454729070E+00, -1.914948577918830E+01, -1.494377118401031E-01, Color.PINK, 10);
-
+        Body moon = new Body(7.34767309e22,
+                -1.372154672737438E+08, 5.858916861173135E+07, 3.878218492670730E+04,
+                -1.295101330709591E+01, -2.683730152708864E+01, 4.882913994546101E-04, Color.WHITE, 5);
 
 
 
@@ -146,7 +163,7 @@ public class Main extends JPanel implements Runnable{
         bodies[8] = uranus;
         bodies[9] = neptune;
         bodies[10] = pluto;
-
+        bodies[11] = moon;
 
         int cntr = 0;
         //int dayCntr = 0;
@@ -158,12 +175,84 @@ public class Main extends JPanel implements Runnable{
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(2200, 1200);
         f.setVisible(true);
+
+        InputMap im = getInputMap(WHEN_FOCUSED);
+        ActionMap am = getActionMap();
+
+        im.put(KeyStroke.getKeyStroke("UP"), "up");
+        im.put(KeyStroke.getKeyStroke("DOWN"), "down");
+        im.put(KeyStroke.getKeyStroke("LEFT"), "left");
+        im.put(KeyStroke.getKeyStroke("RIGHT"), "right");
+        im.put(KeyStroke.getKeyStroke("Z"), "zoomIn");
+        im.put(KeyStroke.getKeyStroke("X"), "zoomOut");
+        im.put(KeyStroke.getKeyStroke("F"), "speedUp");
+        im.put(KeyStroke.getKeyStroke("S"), "speedDown");
+        im.put(KeyStroke.getKeyStroke("E"), "snapToEarth");
+        am.put("up", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                yOffset += 100;
+            }
+        });
+        am.put("down", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                yOffset -= 100;
+            }
+        });
+        am.put("left", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xOffset += 100;
+            }
+        });
+        am.put("right", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xOffset -= 100;
+            }
+        });
+        am.put("zoomIn", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale *= 1.1;
+            }
+        });
+        am.put("zoomOut", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale /= 1.1;
+            }
+        });
+        am.put("speedUp", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timeStep++;
+            }
+        });
+        am.put("speedDown", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (timeStep > 1)
+                    timeStep--;
+            }
+        });
+        am.put("snapToEarth", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int temp1 = (int) (earth.xPos / scale);
+                int temp2 = -(int) (earth.yPos / scale);
+                xOffset = -temp1 + 550;
+                yOffset = -temp2 + 600;
+            }
+        });
+
         //new Thread(this).start();
         while (true) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < bodiesToSim; i++) {
                 bodies[i].calculateForce(bodies, timeStep);
             }
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < bodiesToSim; i++) {
                 bodies[i].update();
             }
             if (cntr % 500 == 0) {
@@ -176,6 +265,9 @@ public class Main extends JPanel implements Runnable{
 
             cntr++;
         }
+
+
+
 
     }
 
