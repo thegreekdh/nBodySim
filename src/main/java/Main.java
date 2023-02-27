@@ -2,11 +2,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.security.Key;
-import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
 public class Main extends JPanel implements Runnable{
@@ -21,9 +19,8 @@ public class Main extends JPanel implements Runnable{
     boolean followingMode = false;
     double scale = 500000000.0;
     int bodyToFollow = 0;
-    int timeStep = 1;  // seconds
+    int timeStep = 10;  // seconds
     boolean exitSignal = false;
-    ArrayList<Thread> myThreads = new ArrayList<>();
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
@@ -300,15 +297,13 @@ public class Main extends JPanel implements Runnable{
 
             while (true) {
                 for (int i = 0; i < bodiesToSim / 4; i++)
-                bodies[i].calculateForce(bodies, timeStep);
+                    bodies[i].calculateForce(bodies, timeStep);
 
                 try {
                     myBarrier.await();
                     drawBarrier.await();
-                } catch (InterruptedException ex) {
-
-                } catch (BrokenBarrierException ex) {
-
+                } catch (InterruptedException | BrokenBarrierException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -321,9 +316,8 @@ public class Main extends JPanel implements Runnable{
             try {
                 myBarrier.await();
                 drawBarrier.await();
-            } catch (InterruptedException ex) {
-
-            } catch (BrokenBarrierException ex) {
+            } catch (InterruptedException | BrokenBarrierException ex) {
+                ex.printStackTrace();
             }
             }
         });
@@ -336,10 +330,8 @@ public class Main extends JPanel implements Runnable{
             try {
                 myBarrier.await();
                 drawBarrier.await();
-            } catch (InterruptedException ex) {
-
-            } catch (BrokenBarrierException ex) {
-
+            } catch (InterruptedException | BrokenBarrierException ex) {
+                ex.printStackTrace();
             }
             }
         });
@@ -352,10 +344,8 @@ public class Main extends JPanel implements Runnable{
             try {
                 myBarrier.await();
                 drawBarrier.await();
-            } catch (InterruptedException ex) {
-
-            } catch (BrokenBarrierException ex) {
-
+            } catch (InterruptedException | BrokenBarrierException ex) {
+                ex.printStackTrace();
             }
             }
         });
@@ -374,10 +364,8 @@ public class Main extends JPanel implements Runnable{
 
             try {
                 myBarrier.await();
-            } catch (InterruptedException ex) {
-
-            } catch (BrokenBarrierException ex) {
-
+            } catch (InterruptedException | BrokenBarrierException ex) {
+                ex.printStackTrace();
             }
 
             for (int i = 0; i < bodiesToSim; i++) {
@@ -386,10 +374,8 @@ public class Main extends JPanel implements Runnable{
 
             try {
                 drawBarrier.await();
-            } catch (InterruptedException ex) {
-
-            } catch (BrokenBarrierException ex) {
-
+            } catch (InterruptedException | BrokenBarrierException ex) {
+                ex.printStackTrace();
             }
             if (cntr % 500 == 0) {
 //                //dayCntr++;
