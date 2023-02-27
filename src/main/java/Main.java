@@ -16,9 +16,9 @@ public class Main extends JPanel implements Runnable{
     int yOffset = 600;
     int yOffsetSideView = yOffset;
     int midPoint = 1100;
-
+    boolean followingMode = false;
     double scale = 500000000.0;
-
+    int bodyToFollow = 0;
     int timeStep = 20;  // seconds
 //    public void render() {
 //        StdDraw.clear();
@@ -96,7 +96,7 @@ public class Main extends JPanel implements Runnable{
         }
     }
 
-    // ephemeris data from https://ssd.jpl.nasa.gov/horizons.cgi
+    // ephemeris data from https://ssd.jpl.nasa.gov/horizons.cgi feb 26th 2023
     public void start() {
         Body sun = new Body(1.989e30,
                 -1.343760924609516E+06, -6.047191362649841E+04, 3.179594186041649E+04,
@@ -156,14 +156,15 @@ public class Main extends JPanel implements Runnable{
         bodies[1] = mercury;
         bodies[2] = venus;
         bodies[3] = earth;
-        bodies[4] = mars;
-        bodies[5] = ceres;
-        bodies[6] = jupiter;
-        bodies[7] = saturn;
-        bodies[8] = uranus;
-        bodies[9] = neptune;
-        bodies[10] = pluto;
-        bodies[11] = moon;
+        bodies[4] = moon;
+        bodies[5] = mars;
+        bodies[6] = ceres;
+        bodies[7] = jupiter;
+        bodies[8] = saturn;
+        bodies[9] = uranus;
+        bodies[10] = neptune;
+        bodies[11] = pluto;
+
 
         int cntr = 0;
         //int dayCntr = 0;
@@ -187,7 +188,7 @@ public class Main extends JPanel implements Runnable{
         im.put(KeyStroke.getKeyStroke("X"), "zoomOut");
         im.put(KeyStroke.getKeyStroke("F"), "speedUp");
         im.put(KeyStroke.getKeyStroke("S"), "speedDown");
-        im.put(KeyStroke.getKeyStroke("E"), "snapToEarth");
+        im.put(KeyStroke.getKeyStroke("B"), "snapToBody");
         am.put("up", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,13 +204,26 @@ public class Main extends JPanel implements Runnable{
         am.put("left", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                xOffset += 100;
+                if (followingMode)
+                    if (bodyToFollow == 0)
+                        bodyToFollow = bodiesToSim - 1;
+                    else
+                        bodyToFollow--;
+
+                else
+                    xOffset += 100;
             }
         });
         am.put("right", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                xOffset -= 100;
+                if (followingMode)
+                    if (bodyToFollow == bodiesToSim - 1)
+                        bodyToFollow = 0;
+                    else
+                        bodyToFollow++;
+                else
+                    xOffset -= 100;
             }
         });
         am.put("zoomIn", new AbstractAction() {
@@ -237,13 +251,10 @@ public class Main extends JPanel implements Runnable{
                     timeStep--;
             }
         });
-        am.put("snapToEarth", new AbstractAction() {
+        am.put("snapToBody", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int temp1 = (int) (earth.xPos / scale);
-                int temp2 = -(int) (earth.yPos / scale);
-                xOffset = -temp1 + 550;
-                yOffset = -temp2 + 600;
+                followingMode = !followingMode;
             }
         });
 
@@ -259,6 +270,13 @@ public class Main extends JPanel implements Runnable{
 //                //dayCntr++;
 //                //System.out.println("Merc: " + dayCntr + ": " + mercury.xPos + ", " + mercury.yPos + ", "
 //                //        + mercury.xVelocity + ", " + mercury.yVelocity);
+                if (followingMode) {
+                    int temp1 = (int) (bodies[bodyToFollow].xPos / scale);
+                    int temp2 = -(int) (bodies[bodyToFollow].yPos / scale);
+                    xOffset = -temp1 + 550;
+                    yOffset = -temp2 + 600;
+                }
+
                 repaint();
 //                cntr =0;
             }
