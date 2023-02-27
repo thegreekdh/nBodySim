@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -10,8 +11,8 @@ import java.util.concurrent.CyclicBarrier;
 public class Main extends JPanel implements Runnable{
 
 
-    Body[] bodies = new Body[17];
-    int bodiesToSim = 17;
+    Body[] bodies = new Body[16];
+    int bodiesToSim = 16;
     int xOffset = 550;
     int yOffset = 600;
     int yOffsetSideView = yOffset;
@@ -21,6 +22,7 @@ public class Main extends JPanel implements Runnable{
     int bodyToFollow = 0;
     int timeStep = 10;  // seconds
     boolean exitSignal = false;
+    int totalThreads = 4;
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
@@ -29,7 +31,8 @@ public class Main extends JPanel implements Runnable{
 //        }
 //        StdDraw.show();
 //    }
-
+CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
+    CyclicBarrier drawBarrier = new CyclicBarrier(totalThreads + 1);
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(Color.BLACK);
@@ -100,6 +103,31 @@ public class Main extends JPanel implements Runnable{
         }
     }
 
+    private class MyThread extends Thread {
+        int set;
+        public MyThread(int set) {
+            this.set = set;
+        }
+        @SuppressWarnings("InfiniteLoopStatement")
+        @Override
+        public void run() {
+            while (true) {
+                for (int i = bodiesToSim / totalThreads * set; i < bodiesToSim / totalThreads * (set + 1); i++)
+                    if (i < bodiesToSim)
+                        bodies[i].calculateForce(bodies, timeStep);
+
+
+                try {
+                    myBarrier.await();
+                    drawBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     // ephemeris data from https://ssd.jpl.nasa.gov/horizons.cgi feb 26th 2023
     public void start() {
         Body sun = new Body(1.989e30,
@@ -152,9 +180,9 @@ public class Main extends JPanel implements Runnable{
         Body callisto = new Body(1.075938e23,
                 7.072815217090786E+08, 2.196461586913177E+08, -1.670343493291690E+07,
                 -5.241670251298696E-01, 2.054553561221208E+01, 3.177641489852636E-01, Color.WHITE, 5);
-        Body titan = new Body(1.3452e23,
-                1.240178874942972E+09, -7.855682211623263E+08, -3.518056014547974E+07,
-                1.007389420466657E+01, 6.966986358379626E+00, -2.612912464657913E-01, Color.WHITE, 5);
+        //Body titan = new Body(1.3452e23,
+        //        1.240178874942972E+09, -7.855682211623263E+08, -3.518056014547974E+07,
+        //        1.007389420466657E+01, 6.966986358379626E+00, -2.612912464657913E-01, Color.WHITE, 5);
 
 
 
@@ -188,7 +216,7 @@ public class Main extends JPanel implements Runnable{
         bodies[13] = europa;
         bodies[14] = ganymede;
         bodies[15] = callisto;
-        bodies[16] = titan;
+        //bodies[16] = titan;
 
 
         int cntr = 0;
@@ -291,70 +319,71 @@ public class Main extends JPanel implements Runnable{
             }
         });
 
-        CyclicBarrier myBarrier = new CyclicBarrier(5);
-        CyclicBarrier drawBarrier = new CyclicBarrier(5);
-        Thread t1 = new Thread(() -> {
 
-            while (true) {
-                for (int i = 0; i < bodiesToSim / 4; i++)
-                    bodies[i].calculateForce(bodies, timeStep);
 
-                try {
-                    myBarrier.await();
-                    drawBarrier.await();
-                } catch (InterruptedException | BrokenBarrierException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-        Thread t2 = new Thread(() -> {
+//        Thread t1 = new Thread(() -> {
+//
+//            while (true) {
+//                for (int i = 0; i < bodiesToSim / 4; i++)
+//                    bodies[i].calculateForce(bodies, timeStep);
+//
+//                try {
+//                    myBarrier.await();
+//                    drawBarrier.await();
+//                } catch (InterruptedException | BrokenBarrierException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        });
+//        Thread t2 = new Thread(() -> {
+//
+//            while (true) {
+//                for (int i = bodiesToSim / 4; i < bodiesToSim / 4 * 2; i++)
+//                    bodies[i].calculateForce(bodies, timeStep);
+//
+//            try {
+//                myBarrier.await();
+//                drawBarrier.await();
+//            } catch (InterruptedException | BrokenBarrierException ex) {
+//                ex.printStackTrace();
+//            }
+//            }
+//        });
+//        Thread t3 = new Thread(() -> {
+//
+//            while (true) {
+//                for (int i = bodiesToSim / 4 * 2; i < bodiesToSim / 4 * 3; i++)
+//                    bodies[i].calculateForce(bodies, timeStep);
+//
+//            try {
+//                myBarrier.await();
+//                drawBarrier.await();
+//            } catch (InterruptedException | BrokenBarrierException ex) {
+//                ex.printStackTrace();
+//            }
+//            }
+//        });
+//        Thread t4 = new Thread(() -> {
+//
+//            while (true) {
+//            for (int i = bodiesToSim / 4 * 3; i < bodiesToSim; i++)
+//                bodies[i].calculateForce(bodies, timeStep);
+//
+//            try {
+//                myBarrier.await();
+//                drawBarrier.await();
+//            } catch (InterruptedException | BrokenBarrierException ex) {
+//                ex.printStackTrace();
+//            }
+//            }
+//        });
 
-            while (true) {
-                for (int i = bodiesToSim / 4; i < bodiesToSim / 4 * 2; i++)
-                    bodies[i].calculateForce(bodies, timeStep);
+        ArrayList<MyThread> threads = new ArrayList<>();
+        for (int i = 0; i < totalThreads; i++) {
+            threads.add(new MyThread(i));
+            threads.get(i).start();
+        }
 
-            try {
-                myBarrier.await();
-                drawBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException ex) {
-                ex.printStackTrace();
-            }
-            }
-        });
-        Thread t3 = new Thread(() -> {
-
-            while (true) {
-                for (int i = bodiesToSim / 4 * 2; i < bodiesToSim / 4 * 3; i++)
-                    bodies[i].calculateForce(bodies, timeStep);
-
-            try {
-                myBarrier.await();
-                drawBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException ex) {
-                ex.printStackTrace();
-            }
-            }
-        });
-        Thread t4 = new Thread(() -> {
-
-            while (true) {
-            for (int i = bodiesToSim / 4 * 3; i < bodiesToSim; i++)
-                bodies[i].calculateForce(bodies, timeStep);
-
-            try {
-                myBarrier.await();
-                drawBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException ex) {
-                ex.printStackTrace();
-            }
-            }
-        });
-
-        //
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
         while (true) {
 
             //CountDownLatch myLatch = new CountDownLatch(bodiesToSim);
