@@ -383,6 +383,14 @@ public class Main extends JPanel implements Runnable{
             for (int i = 0; i < bodiesToSim; i++) {
                 bodies[i].update();
             }
+
+            try {
+                drawBarrier.await();
+            } catch (InterruptedException ex) {
+
+            } catch (BrokenBarrierException ex) {
+
+            }
             if (cntr % 500 == 0) {
 //                //dayCntr++;
 //                //System.out.println("Merc: " + dayCntr + ": " + mercury.xPos + ", " + mercury.yPos + ", "
@@ -403,13 +411,7 @@ public class Main extends JPanel implements Runnable{
 
 
             cntr++;
-            try {
-                drawBarrier.await();
-            } catch (InterruptedException ex) {
 
-            } catch (BrokenBarrierException ex) {
-
-            }
         }
 
         System.exit(0);
