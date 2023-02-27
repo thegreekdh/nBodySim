@@ -11,8 +11,8 @@ import java.util.concurrent.CyclicBarrier;
 public class Main extends JPanel implements Runnable{
 
 
-    Body[] bodies = new Body[16];
-    int bodiesToSim = 16;
+    Body[] bodies = new Body[17];
+    int bodiesToSim = 17;
     int xOffset = 550;
     int yOffset = 600;
     int yOffsetSideView = yOffset;
@@ -22,7 +22,7 @@ public class Main extends JPanel implements Runnable{
     int bodyToFollow = 0;
     int timeStep = 10;  // seconds
     boolean exitSignal = false;
-    int totalThreads = 4;
+    int totalThreads = 5;
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
@@ -112,7 +112,7 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         @Override
         public void run() {
             while (true) {
-                for (int i = bodiesToSim / totalThreads * set; i < bodiesToSim / totalThreads * (set + 1); i++)
+                for (int i = bodiesToSim / (totalThreads - 1) * set; i < bodiesToSim / (totalThreads - 1) * (set + 1); i++)
                     if (i < bodiesToSim)
                         bodies[i].calculateForce(bodies, timeStep);
 
@@ -180,9 +180,9 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         Body callisto = new Body(1.075938e23,
                 7.072815217090786E+08, 2.196461586913177E+08, -1.670343493291690E+07,
                 -5.241670251298696E-01, 2.054553561221208E+01, 3.177641489852636E-01, Color.WHITE, 5);
-        //Body titan = new Body(1.3452e23,
-        //        1.240178874942972E+09, -7.855682211623263E+08, -3.518056014547974E+07,
-        //        1.007389420466657E+01, 6.966986358379626E+00, -2.612912464657913E-01, Color.WHITE, 5);
+        Body titan = new Body(1.3452e23,
+                1.240178874942972E+09, -7.855682211623263E+08, -3.518056014547974E+07,
+                1.007389420466657E+01, 6.966986358379626E+00, -2.612912464657913E-01, Color.WHITE, 5);
 
 
 
@@ -216,7 +216,7 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         bodies[13] = europa;
         bodies[14] = ganymede;
         bodies[15] = callisto;
-        //bodies[16] = titan;
+        bodies[16] = titan;
 
 
         int cntr = 0;
