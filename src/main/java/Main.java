@@ -31,13 +31,13 @@ public class Main extends JPanel implements Runnable{
 
     @Override
     public void paintComponent(Graphics g) {
-       g.setColor(Color.BLACK);
-       g.fillRect(0, 0, 2200, 1200);
-       g.setColor(Color.WHITE);
-       g.fillRect(midPoint - 2, 0, 4, 1200);
-       g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-       g.drawString("Top view", 450, 50);
-       g.drawString("Side view", 1550, 50);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 2200, 1200);
+        g.setColor(Color.WHITE);
+        g.fillRect(midPoint - 2, 0, 4, 1200);
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+        g.drawString("Top view", 450, 50);
+        g.drawString("Side view", 1550, 50);
         for (int i = 0; i < bodiesToSim; i++) {
 
 
