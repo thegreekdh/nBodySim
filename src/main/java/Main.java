@@ -1,11 +1,13 @@
 
 import javax.swing.*;
-//import java.awt.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.math.BigInteger;
-import java.text.DecimalFormat;
+import java.security.Key;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 public class Main extends JPanel implements Runnable{
 
@@ -20,6 +22,8 @@ public class Main extends JPanel implements Runnable{
     double scale = 500000000.0;
     int bodyToFollow = 0;
     int timeStep = 1;  // seconds
+    boolean exitSignal = false;
+    ArrayList<Thread> myThreads = new ArrayList<>();
 //    public void render() {
 //        StdDraw.clear();
 //        for (int i = 0; i < bodies.length; i++) {
@@ -49,8 +53,8 @@ public class Main extends JPanel implements Runnable{
             int temp2 = -(int) (bodies[i].yPos / scale);
             temp1 += xOffset;
             temp2 += yOffset;
-            temp1 -= (int) (bodies[i].radius / 2);
-            temp2 -= (int) (bodies[i].radius / 2);
+            temp1 -= (bodies[i].radius / 2);
+            temp2 -= (bodies[i].radius / 2);
 
             g.setColor(bodies[i].color);
             if (temp1 < 0 || temp1 > 1050 || temp2 < 0 || temp2 > 1050)
@@ -58,8 +62,8 @@ public class Main extends JPanel implements Runnable{
             g.fillOval(temp1, temp2,
                     bodies[i].radius, bodies[i].radius);
 
-            temp1 += (int) (bodies[i].radius / 2);
-            temp2 += (int) (bodies[i].radius / 2);
+            temp1 += (bodies[i].radius / 2);
+            temp2 += (bodies[i].radius / 2);
             Iterator<Double> xIt = bodies[i].oldXs.iterator();
             Iterator<Double> yIt = bodies[i].oldYs.iterator();
 
@@ -83,12 +87,15 @@ public class Main extends JPanel implements Runnable{
             int temp1 = (int) (bodies[i].xPos / scale);
             int temp2 = (int) -(bodies[i].zPos / scale);
             temp1 += xOffset + midPoint;
-            temp2 += yOffsetSideView;
+            if (followingMode)
+                temp2 += yOffsetSideView + (int) (bodies[bodyToFollow].zPos / scale);
+            else
+                temp2 += yOffsetSideView;
             if (temp1 < 1150 || temp1 > 2200 || temp2 < 0 || temp2 > 1050)
                 continue;
             g.drawLine(temp1, yOffsetSideView, temp1, temp2);
-            temp1 -= (int) (bodies[i].radius / 2);
-            temp2 -= (int) (bodies[i].radius / 2);
+            temp1 -= (bodies[i].radius / 2);
+            temp2 -= (bodies[i].radius / 2);
 
             g.fillOval(temp1, temp2,
                     bodies[i].radius, bodies[i].radius);
@@ -137,7 +144,7 @@ public class Main extends JPanel implements Runnable{
                 -1.372154672737438E+08, 5.858916861173135E+07, 3.878218492670730E+04,
                 -1.295101330709591E+01, -2.683730152708864E+01, 4.882913994546101E-04, Color.WHITE, 5);
         Body io = new Body(8.931938e22,
-                7.059811559222276E+088, 2.206162022719481E+08, -1.668891879840240E+07,
+                7.059811559222276E+08, 2.206162022719481E+08, -1.668891879840240E+07,
                 -1.074892601280871E+01, 2.904066745883379E+01, 4.980292541964140E-01, Color.WHITE, 5);
         Body europa = new Body(4.799844e22,
                 7.061599609226100E+08, 2.200866843803024E+08, -1.670078199216314E+07,
@@ -210,6 +217,8 @@ public class Main extends JPanel implements Runnable{
         im.put(KeyStroke.getKeyStroke("F"), "speedUp");
         im.put(KeyStroke.getKeyStroke("S"), "speedDown");
         im.put(KeyStroke.getKeyStroke("B"), "snapToBody");
+        im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
+
         am.put("up", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -250,13 +259,13 @@ public class Main extends JPanel implements Runnable{
         am.put("zoomIn", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scale *= 1.1;
+                scale /= 1.1;
             }
         });
         am.put("zoomOut", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scale /= 1.1;
+                scale *= 1.1;
             }
         });
         am.put("speedUp", new AbstractAction() {
@@ -278,12 +287,99 @@ public class Main extends JPanel implements Runnable{
                 followingMode = !followingMode;
             }
         });
-
-        //new Thread(this).start();
-        while (true) {
-            for (int i = 0; i < bodiesToSim; i++) {
-                bodies[i].calculateForce(bodies, timeStep);
+        am.put("exit", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exitSignal = true;
             }
+        });
+
+        CyclicBarrier myBarrier = new CyclicBarrier(5);
+        CyclicBarrier drawBarrier = new CyclicBarrier(5);
+        Thread t1 = new Thread(() -> {
+
+            while (true) {
+                for (int i = 0; i < bodiesToSim / 4; i++)
+                bodies[i].calculateForce(bodies, timeStep);
+
+                try {
+                    myBarrier.await();
+                    drawBarrier.await();
+                } catch (InterruptedException ex) {
+
+                } catch (BrokenBarrierException ex) {
+
+                }
+            }
+        });
+        Thread t2 = new Thread(() -> {
+
+            while (true) {
+                for (int i = bodiesToSim / 4; i < bodiesToSim / 4 * 2; i++)
+                    bodies[i].calculateForce(bodies, timeStep);
+
+            try {
+                myBarrier.await();
+                drawBarrier.await();
+            } catch (InterruptedException ex) {
+
+            } catch (BrokenBarrierException ex) {
+            }
+            }
+        });
+        Thread t3 = new Thread(() -> {
+
+            while (true) {
+                for (int i = bodiesToSim / 4 * 2; i < bodiesToSim / 4 * 3; i++)
+                    bodies[i].calculateForce(bodies, timeStep);
+
+            try {
+                myBarrier.await();
+                drawBarrier.await();
+            } catch (InterruptedException ex) {
+
+            } catch (BrokenBarrierException ex) {
+
+            }
+            }
+        });
+        Thread t4 = new Thread(() -> {
+
+            while (true) {
+            for (int i = bodiesToSim / 4 * 3; i < bodiesToSim; i++)
+                bodies[i].calculateForce(bodies, timeStep);
+
+            try {
+                myBarrier.await();
+                drawBarrier.await();
+            } catch (InterruptedException ex) {
+
+            } catch (BrokenBarrierException ex) {
+
+            }
+            }
+        });
+
+        //
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+        while (true) {
+
+            //CountDownLatch myLatch = new CountDownLatch(bodiesToSim);
+            //for (int i = 0; i < bodiesToSim; i++) {
+                //int finalI = i;
+
+
+            try {
+                myBarrier.await();
+            } catch (InterruptedException ex) {
+
+            } catch (BrokenBarrierException ex) {
+
+            }
+
             for (int i = 0; i < bodiesToSim; i++) {
                 bodies[i].update();
             }
@@ -302,24 +398,30 @@ public class Main extends JPanel implements Runnable{
 //                cntr =0;
             }
 
+            if (exitSignal)
+                break;
+
+
             cntr++;
+            try {
+                drawBarrier.await();
+            } catch (InterruptedException ex) {
+
+            } catch (BrokenBarrierException ex) {
+
+            }
         }
 
-
+        System.exit(0);
 
 
     }
 
     @Override
     public void run() {
-        while (true) {
-            repaint();
-            try {
-                Thread.sleep(15);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        //while (true) {
+        //    bodies[i].calculateForce(bodies, timeStep);
+        //}
 
     }
 }

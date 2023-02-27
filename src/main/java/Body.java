@@ -133,8 +133,8 @@ public class Body implements Runnable {
                 zDistance = bodies[i].zPos - zPos;
                 dist = xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
                 indForce = bodies[i].mass * mass / dist * 6.67408e-11;
-                indAngle = radToDeg(Math.atan2(yDistance, xDistance));
-                indElev = radToDeg(Math.atan2(zDistance, Math.sqrt(xDistance * xDistance + yDistance * yDistance)));
+                indAngle = Math.atan2(yDistance, xDistance);
+                indElev = Math.atan2(zDistance, Math.sqrt(xDistance * xDistance + yDistance * yDistance));
                 forces3d[i] = new threeDVector(indForce, indAngle, indElev);
             }
             else
@@ -143,20 +143,20 @@ public class Body implements Runnable {
 
 
         for (int i = 0; i < forces3d.length; i++) {
-            totalXForce += forces3d[i].mag * Math.cos(degToRad(forces3d[i].angle));
-            totalYForce += forces3d[i].mag * Math.sin(degToRad(forces3d[i].angle));
-            totalZForce += forces3d[i].mag * Math.sin(degToRad(forces3d[i].elev));
+            totalXForce += forces3d[i].mag * Math.cos(forces3d[i].angle);
+            totalYForce += forces3d[i].mag * Math.sin(forces3d[i].angle);
+            totalZForce += forces3d[i].mag * Math.sin(forces3d[i].elev);
 
 
         }
 
         total.mag = Math.sqrt(totalXForce * totalXForce + totalYForce * totalYForce + totalZForce * totalZForce);
-        total.angle = radToDeg(Math.atan2(totalYForce, totalXForce));
-        total.elev = radToDeg(Math.atan2(totalZForce, Math.sqrt(totalXForce * totalXForce + totalYForce * totalYForce)));
+        total.angle = Math.atan2(totalYForce, totalXForce);
+        total.elev = Math.atan2(totalZForce, Math.sqrt(totalXForce * totalXForce + totalYForce * totalYForce));
 
-        double xAccel = total.mag / mass * Math.cos(degToRad(total.angle));
-        double yAccel = total.mag / mass * Math.sin(degToRad(total.angle));
-        double zAccel = total.mag / mass * Math.sin(degToRad(total.elev));
+        double xAccel = total.mag / mass * Math.cos(total.angle);
+        double yAccel = total.mag / mass * Math.sin(total.angle);
+        double zAccel = total.mag / mass * Math.sin(total.elev);
         // Update temps
         //double accel = total.magnitude / mass;
         tempXVelocity = xVelocity + xAccel * timeStep;
