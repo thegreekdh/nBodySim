@@ -20,7 +20,7 @@ public class Body implements Runnable {
     double tempXVelocity;
     double tempYVelocity;
     double tempZVelocity;
-
+    String name;
     LinkedList<Double> oldXs;
     LinkedList<Double> oldYs;
     private class VectorForce {
@@ -45,8 +45,9 @@ public class Body implements Runnable {
         }
     }
 
-    public Body(double mass, double xPos, double yPos, double zPos, double xVelocity,
+    public Body(String name, double mass, double xPos, double yPos, double zPos, double xVelocity,
                 double yVelocity, double zVelocity, Color color, int radius) {
+        this.name = name;
         this.mass = mass;
         this.xPos = xPos *  1000;
         this.yPos = yPos *  1000;
