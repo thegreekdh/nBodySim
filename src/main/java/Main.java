@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-public class Main extends JPanel implements Runnable{
+public class Main extends JPanel {
 
 
     Body[] bodies = new Body[23];
@@ -25,16 +25,9 @@ public class Main extends JPanel implements Runnable{
     boolean exitSignal = false;
     int totalThreads = 5;
     DecimalFormat d = new DecimalFormat("#.##E00");
-//    public void render() {
-//        StdDraw.clear();
-//        for (int i = 0; i < bodies.length; i++) {
-//            StdDraw.setPenColor(bodies[i].color);
-//            StdDraw.filledCircle(bodies[i].xPos.doubleValue(), bodies[i].yPos.doubleValue(), bodies[i].radius);
-//        }
-//        StdDraw.show();
-//    }
-CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
+    CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
     CyclicBarrier drawBarrier = new CyclicBarrier(totalThreads + 1);
+
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(Color.BLACK);
@@ -46,11 +39,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         g.drawString("Side view", 1550, 50);
         for (int i = 0; i < bodiesToSim; i++) {
 
-
-
-
-            //g.fillOval(500, 500,
-            //        bodies[i].radius, bodies[i].radius);
             int temp1 = (int) (bodies[i].xPos / scale);
             int temp2 = -(int) (bodies[i].yPos / scale);
             temp1 += xOffset;
@@ -184,8 +172,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         Body pluto = new Body("Pluto", 1.303e22,
                 2.442548562633492E+09, -4.577248595625036E+09, -2.167356603368096E+08,
                 4.948830971912519E+00, 1.383320622318901E+00, -1.588267256009569E+00, Color.DARK_GRAY, 10);
-//        Body anotherSun = new Body(1.989e30,
-//                1e11, 0, 0, 40000, Color.PINK, 50);
         Body ceres = new Body("Ceres", 9.393e20,
                 -3.760270381504925E+08, 3.792730059730145E+07, 7.025117451664409E+07,
                 -2.469971454729070E+00, -1.914948577918830E+01, -1.494377118401031E-01, Color.PINK, 10);
@@ -219,28 +205,13 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         Body eris = new Body("Eris", 1.66e22,
                 1.281842755254781E+10, 5.768357509329563E+09, -2.763248013545221E+09,
                 -7.636909830733408E-01, 1.508759271203845E+00, 1.611927739257515E+00, Color.LIGHT_GRAY, 10);
-    Body charon = new Body("Charon", 1.586e21,
+        Body charon = new Body("Charon", 1.586e21,
             2.442544097752507E+09, -4.577261948732002E+09 , -2.167492904697700E+08,
             4.792975328491395E+00, 1.297807060967669E+00 , -1.453453013328513E+00, Color.WHITE, 5);
-    //Body phobos = new Body("Phobos", 1.0659e16,
-    //        -1.017446369118421E+08,2.209866115019074E+08 , 7.130515390122995E+06,
-    //       -2.007708301820792E+01, -9.730918016337872E+00 , -2.879709281916099E-01, Color.WHITE, 5);
-    Body deimos = new Body("Deimos", 1.4762e15,
+        Body deimos = new Body("Deimos", 1.4762e15,
             -1.017518854619716E+08, 2.210092190168600E+08, 7.134919816656277E+06,
             -2.207181013902220E+01, -8.892239200333885E+00 , 6.968481860412905E-01, Color.WHITE, 5);
 
-
-        // generate some random planets for me
-//        for (int i = 0; i < 100; i++) {
-//            double mass = Math.random() * 1e30;
-//            double xPos = Math.random() * 3e11;
-//            double yPos = Math.random() * 3e11;
-//            double xVel = Math.random() * 1e4;
-//            double yVel = Math.random() * 1e4;
-//            Color color = new Color((int) (Math.random() * 0x1000000));
-//            int radius = (int) (Math.random() * 50);
-//            bodies[i] = new Body(mass, xPos, yPos, xVel, yVel, color, radius);
-//        }
         bodies[0] = sun;
         bodies[1] = mercury;
         bodies[2] = venus;
@@ -268,8 +239,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
 
 
         int cntr = 0;
-        //int dayCntr = 0;
-        //setBackground(Color.BLACK);
 
         setDoubleBuffered(true);
         JFrame f = new JFrame();
@@ -367,65 +336,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
             }
         });
 
-
-
-//        Thread t1 = new Thread(() -> {
-//
-//            while (true) {
-//                for (int i = 0; i < bodiesToSim / 4; i++)
-//                    bodies[i].calculateForce(bodies, timeStep);
-//
-//                try {
-//                    myBarrier.await();
-//                    drawBarrier.await();
-//                } catch (InterruptedException | BrokenBarrierException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        });
-//        Thread t2 = new Thread(() -> {
-//
-//            while (true) {
-//                for (int i = bodiesToSim / 4; i < bodiesToSim / 4 * 2; i++)
-//                    bodies[i].calculateForce(bodies, timeStep);
-//
-//            try {
-//                myBarrier.await();
-//                drawBarrier.await();
-//            } catch (InterruptedException | BrokenBarrierException ex) {
-//                ex.printStackTrace();
-//            }
-//            }
-//        });
-//        Thread t3 = new Thread(() -> {
-//
-//            while (true) {
-//                for (int i = bodiesToSim / 4 * 2; i < bodiesToSim / 4 * 3; i++)
-//                    bodies[i].calculateForce(bodies, timeStep);
-//
-//            try {
-//                myBarrier.await();
-//                drawBarrier.await();
-//            } catch (InterruptedException | BrokenBarrierException ex) {
-//                ex.printStackTrace();
-//            }
-//            }
-//        });
-//        Thread t4 = new Thread(() -> {
-//
-//            while (true) {
-//            for (int i = bodiesToSim / 4 * 3; i < bodiesToSim; i++)
-//                bodies[i].calculateForce(bodies, timeStep);
-//
-//            try {
-//                myBarrier.await();
-//                drawBarrier.await();
-//            } catch (InterruptedException | BrokenBarrierException ex) {
-//                ex.printStackTrace();
-//            }
-//            }
-//        });
-
         ArrayList<MyThread> threads = new ArrayList<>();
         for (int i = 0; i < totalThreads; i++) {
             threads.add(new MyThread(i));
@@ -433,11 +343,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
         }
 
         while (true) {
-
-            //CountDownLatch myLatch = new CountDownLatch(bodiesToSim);
-            //for (int i = 0; i < bodiesToSim; i++) {
-                //int finalI = i;
-
 
             try {
                 myBarrier.await();
@@ -455,9 +360,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
                 ex.printStackTrace();
             }
             if (cntr % 500 == 0) {
-//                //dayCntr++;
-//                //System.out.println("Merc: " + dayCntr + ": " + mercury.xPos + ", " + mercury.yPos + ", "
-//                //        + mercury.xVelocity + ", " + mercury.yVelocity);
                 if (followingMode) {
                     int temp1 = (int) (bodies[bodyToFollow].xPos / scale);
                     int temp2 = -(int) (bodies[bodyToFollow].yPos / scale);
@@ -466,12 +368,11 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
                 }
 
                 repaint();
-//                cntr =0;
+                cntr = 0;
             }
 
             if (exitSignal)
                 break;
-
 
             cntr++;
 
@@ -479,14 +380,6 @@ CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
 
         System.exit(0);
 
-
-    }
-
-    @Override
-    public void run() {
-        //while (true) {
-        //    bodies[i].calculateForce(bodies, timeStep);
-        //}
 
     }
 }

@@ -1,9 +1,7 @@
 import java.awt.*;
-import java.math.BigInteger;
-import java.util.Deque;
 import java.util.LinkedList;
 
-public class Body implements Runnable {
+public class Body {
     double mass;
     double xPos;
     double yPos;
@@ -23,17 +21,8 @@ public class Body implements Runnable {
     String name;
     LinkedList<Double> oldXs;
     LinkedList<Double> oldYs;
-    private class VectorForce {
-        double magnitude;
-        double angle;
 
-        public VectorForce(double magnitude, double angle) {
-            this.magnitude = magnitude;
-            this.angle = angle;
-        }
-    }
-
-    private class threeDVector {
+    private static class threeDVector {
         double mag;
         double angle;
         double elev;
@@ -85,47 +74,21 @@ public class Body implements Runnable {
         zVelocity = tempZVelocity;
     }
 
-    public double degToRad(double degrees) {
-        return degrees * Math.PI / 180.0;
-    }
-
-    public double radToDeg(double radians) {
-        return radians * 180.0 / Math.PI;
-    }
-
     public void calculateForce(Body[] bodies, int timeStep) {
-        double indForce = 0.0;
-        double indAngle = 0.0;
-        double indElev = 0.0;
-        double dist = 0.0;
-        double xDistance = 0.0;
-        double yDistance = 0.0;
-        double zDistance = 0.0;
+        double indForce;
+        double indAngle;
+        double indElev;
+        double dist;
+        double xDistance;
+        double yDistance;
+        double zDistance;
         double totalXForce = 0.0;
         double totalYForce = 0.0;
         double totalZForce = 0.0;
 
         threeDVector[] forces3d = new threeDVector[bodies.length];
 
-
-//        VectorForce[] forces = new VectorForce[bodies.length];
-//
-//        // Calculate the forces on this body from all other bodies
-//        for (int i = 0; i < bodies.length; i++) {
-//            if (bodies[i] != this) {
-//                xDistance = bodies[i].xPos - xPos;
-//                yDistance = bodies[i].yPos - yPos;
-//                dist = xDistance * xDistance + yDistance * yDistance;
-//                indForce = bodies[i].mass * mass / dist * 6.67408e-11;
-//                indAngle = radToDeg(Math.atan2(yDistance, xDistance));
-//                forces[i] = new VectorForce(indForce, indAngle);
-//            }
-//            else
-//                forces[i] = new VectorForce(0.0, 0.0);
-//        }
-
         // Add the forces
-        //VectorForce total = new VectorForce(0, 0);
         threeDVector total = new threeDVector(0, 0, 0);
         for (int i = 0; i < forces3d.length; i++) {
             if (bodies[i] != this) {
@@ -143,12 +106,10 @@ public class Body implements Runnable {
         }
 
 
-        for (int i = 0; i < forces3d.length; i++) {
-            totalXForce += forces3d[i].mag * Math.cos(forces3d[i].angle);
-            totalYForce += forces3d[i].mag * Math.sin(forces3d[i].angle);
-            totalZForce += forces3d[i].mag * Math.sin(forces3d[i].elev);
-
-
+        for (Body.threeDVector threeDVector : forces3d) {
+            totalXForce += threeDVector.mag * Math.cos(threeDVector.angle);
+            totalYForce += threeDVector.mag * Math.sin(threeDVector.angle);
+            totalZForce += threeDVector.mag * Math.sin(threeDVector.elev);
         }
 
         total.mag = Math.sqrt(totalXForce * totalXForce + totalYForce * totalYForce + totalZForce * totalZForce);
@@ -158,8 +119,8 @@ public class Body implements Runnable {
         double xAccel = total.mag / mass * Math.cos(total.angle);
         double yAccel = total.mag / mass * Math.sin(total.angle);
         double zAccel = total.mag / mass * Math.sin(total.elev);
+
         // Update temps
-        //double accel = total.magnitude / mass;
         tempXVelocity = xVelocity + xAccel * timeStep;
         tempYVelocity = yVelocity + yAccel * timeStep;
         tempZVelocity = zVelocity + zAccel * timeStep;
@@ -167,10 +128,6 @@ public class Body implements Runnable {
         tempYPos = yPos + tempYVelocity * timeStep + 0.5 * yAccel * timeStep * timeStep;
         tempZPos = zPos + tempZVelocity * timeStep + 0.5 * zAccel * timeStep * timeStep;
 
-
-    }
-
-    public void run() {
 
     }
 
