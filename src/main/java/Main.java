@@ -24,6 +24,7 @@ public class Main extends JPanel {
     int timeStep = 5;  // seconds
     boolean exitSignal = false;
     int totalThreads = 5;
+    boolean paused = true;
     DecimalFormat d = new DecimalFormat("#.##E00");
     CyclicBarrier myBarrier = new CyclicBarrier(totalThreads + 1);
     CyclicBarrier drawBarrier = new CyclicBarrier(totalThreads + 1);
@@ -260,7 +261,7 @@ public class Main extends JPanel {
         im.put(KeyStroke.getKeyStroke("S"), "speedDown");
         im.put(KeyStroke.getKeyStroke("B"), "snapToBody");
         im.put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
-
+        im.put(KeyStroke.getKeyStroke("SPACE"), "pause");
         am.put("up", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -335,6 +336,12 @@ public class Main extends JPanel {
                 exitSignal = true;
             }
         });
+        am.put("pause", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paused = !paused;
+            }
+        });
 
         ArrayList<MyThread> threads = new ArrayList<>();
         for (int i = 0; i < totalThreads; i++) {
@@ -344,21 +351,24 @@ public class Main extends JPanel {
 
         while (true) {
 
-            try {
-                myBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException ex) {
-                ex.printStackTrace();
+            if (!paused) {
+                try {
+                    myBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException ex) {
+                    ex.printStackTrace();
+                }
+
+                for (int i = 0; i < bodiesToSim; i++) {
+                    bodies[i].update();
+                }
+
+                try {
+                    drawBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException ex) {
+                    ex.printStackTrace();
+                }
             }
 
-            for (int i = 0; i < bodiesToSim; i++) {
-                bodies[i].update();
-            }
-
-            try {
-                drawBarrier.await();
-            } catch (InterruptedException | BrokenBarrierException ex) {
-                ex.printStackTrace();
-            }
             if (cntr % 500 == 0) {
                 if (followingMode) {
                     int temp1 = (int) (bodies[bodyToFollow].xPos / scale);
